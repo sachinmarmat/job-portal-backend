@@ -98,8 +98,8 @@ exports.Usersignup = async (req, res) => {
       expiresIn: "10m",
     });
 
-    const verifyUrl = `http://localhost:8080/api/auth/verify/${verifyToken}`;
-    // SERVER_URL should be like http://localhost:8080 in .env
+    const verifyUrl = `https://job-portal-backend-2q8i.onrender.com/api/auth/verify/${verifyToken}`;
+    // SERVER_URL should be like https://job-portal-backend-2q8i.onrender.com/ in .env
 
     // Send verification email
     await transporter.sendMail({
@@ -185,8 +185,8 @@ exports.Employersignup = async (req, res) => {
       expiresIn: "10m",
     });
 
-    const verifyUrl = `http://localhost:8080/api/auth/verify/${verifyToken}`;
-    // SERVER_URL should be like http://localhost:8080 in .env
+    const verifyUrl = `https://job-portal-backend-2q8i.onrender.com/api/auth/verify/${verifyToken}`;
+    // SERVER_URL should be like https:/job-portal-backend-2q8i.onrender.com/ in .env
 
     // Send verification email
     await transporter.sendMail({
@@ -516,7 +516,7 @@ exports.resendVerification = async (req, res) => {
       expiresIn: "1h",
     });
 
-    const verifyUrl = `http://localhost:8080/api/auth/verify/${verifyToken}`;
+    const verifyUrl = `https://job-portal-backend-2q8i.onrender.com//api/auth/verify/${verifyToken}`;
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
