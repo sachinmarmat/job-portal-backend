@@ -14,8 +14,19 @@ const Employer = require('./models/Employer');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true })); 
-app.use(cors())
+// app.use(cors())
 // app.use(status())
+
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://pixel-ui-git-main-sachinmarmats-projects.vercel.app"
+  ],
+  credentials: true
+}));
+
+
 
 
 // routes------------------------------------------------------------------
