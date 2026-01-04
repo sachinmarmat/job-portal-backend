@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://pixel-ui-git-main-sachinmarmats-projects.vercel.app"
+    "https://pixel-ui-six.vercel.app/"
   ],
   credentials: true
 }));
