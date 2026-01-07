@@ -4,10 +4,13 @@ const Employer = require("../models/Employer");
 
 
 // Sign access and refresh tokens
-const signAccess = (user) =>
-  jwt.sign({ id: user._id, role: user.role }, process.env.JWT_ACCESS_SECRET, {
+const signAccess = (user) => {
+  // Ensure role is set properly
+  const userRole = user.role || (user.constructor.modelName === 'user' ? 'jobseeker' : 'employer');
+  return jwt.sign({ id: user._id, role: userRole }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.ACCESS_EXPIRES,
-  }); 
+  });
+}; 
 
 const signRefresh = (user) =>
   jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, {

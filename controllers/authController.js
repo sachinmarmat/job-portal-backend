@@ -162,10 +162,6 @@ exports.Employersignup = async (req, res) => {
         .status(409)
         .json({ status: false, msg: "Email already in use" });
     }
-    if (existingUser)  
-      return res
-        .status(409)
-        .json({ status: false, msg: "Email already in use" });
 
     //  Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
