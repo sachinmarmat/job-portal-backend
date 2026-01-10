@@ -9,22 +9,27 @@ const Employer = require('./models/Employer');
 
 const app = express();
 
-// ✅ CORS MUST COME FIRST
+/* -------------------- CORS -------------------- */
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://pixel-ui-six.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://pixel-ui-six.vercel.app" 
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
   credentials: true
 }));
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// routes
+/* -------------------- ROUTES -------------------- */
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/jobs', require('./routes/jobRoute'));
 app.use('/api/user', require('./routes/userRoute'));
@@ -36,22 +41,34 @@ app.get('/', (req, res) => {
   res.send('Hello backend is working!');
 });
 
-connectDB();
-
-// cron job
-cron.schedule("* * * * *", async () => {
-  const now = new Date();
-
-  await User.updateMany(
-    { status: "suspended", suspendedUntil: { $lte: now } },
-    { status: "active", suspendedUntil: null, suspensionReason: null }
-  );
-
-  await Employer.updateMany(
-    { status: "suspended", suspendedUntil: { $lte: now } },
-    { status: "active", suspendedUntil: null, suspensionReason: null }
-  );
-});
-
+/* -------------------- START SERVER SAFELY -------------------- */
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+connectDB().then(() => {
+
+  // ✅ Start cron ONLY after DB is connected
+  cron.schedule("* * * * *", async () => {
+    try {
+      const now = new Date();
+
+      await User.updateMany(
+        { status: "suspended", suspendedUntil: { $lte: now } },
+        { status: "active", suspendedUntil: null, suspensionReason: null }
+      );
+
+      await Employer.updateMany(
+        { status: "suspended", suspendedUntil: { $lte: now } },
+        { status: "active", suspendedUntil: null, suspensionReason: null }
+      );
+
+      // console.log("Cron job executed successfully");
+    } catch (error) {
+      console.error("Cron job error:", error.message);
+    }
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+
+});
